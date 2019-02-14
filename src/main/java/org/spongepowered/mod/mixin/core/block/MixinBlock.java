@@ -27,7 +27,7 @@ package org.spongepowered.mod.mixin.core.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -51,7 +51,7 @@ public abstract class MixinBlock implements IMixinBlock {
 
         // requiresLocationCheckForLightValue // Forge added method getLightValue that takes a state, world, and position
         try {
-            Class<?>[] args = {IBlockState.class, IBlockAccess.class, BlockPos.class};
+            Class<?>[] args = {IBlockState.class, IBlockReader.class, BlockPos.class};
             Class<?> clazz = this.getClass().getMethod("getLightValue", args).getDeclaringClass();
             if (clazz.equals(Block.class)) {
                 this.requiresLocationCheckForLight = false;
@@ -62,7 +62,7 @@ public abstract class MixinBlock implements IMixinBlock {
 
         // requiresLocationCheckForOpacity // Forge added method getLightValue that takes a state, world, and position
         try {
-            Class<?>[] args = {IBlockState.class, IBlockAccess.class, BlockPos.class};
+            Class<?>[] args = {IBlockState.class, IBlockReader.class, BlockPos.class};
             Class<?> clazz = this.getClass().getMethod("getLightOpacity", args).getDeclaringClass();
             if (clazz.equals(Block.class)) {
                 this.requiresLocationCheckForOpacity = false;

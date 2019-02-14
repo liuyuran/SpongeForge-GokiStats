@@ -83,7 +83,7 @@ public abstract class MixinIntegratedServer extends MixinMinecraftServer impleme
     @Override
     public void shutdown(Text kickMessage) {
         checkNotNull(kickMessage);
-        ((IMixinMinecraft) Minecraft.getMinecraft()).setSinglePlayerKickMessage(kickMessage);
+        ((IMixinMinecraft) Minecraft.getInstance()).setSinglePlayerKickMessage(kickMessage);
         shutdown();
     }
 

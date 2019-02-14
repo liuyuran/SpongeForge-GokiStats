@@ -47,13 +47,14 @@ public abstract class MixinWorld_Activation implements IMixinWorld {
 
     /**
      * @author blood
+     * @author Aaron1011 - February 14th, 2019 - Update for 1.13
      * @reason Activation range checks.
      *
      * @param entityIn
      * @param forceUpdate
      */
     @Overwrite
-    public void updateEntityWithOptionalForce(Entity entityIn, boolean forceUpdate)
+    public void tickEntity(Entity entityIn, boolean forceUpdate)
     {
         // Sponge start - area is handled in ActivationRange
         //int i = MathHelper.floor_double(entityIn.posX);
@@ -82,13 +83,13 @@ public abstract class MixinWorld_Activation implements IMixinWorld {
             ++entityIn.ticksExisted;
             ++co.aikar.timings.TimingHistory.activatedEntityTicks; // Sponge
 
-            if (entityIn.isRiding())
+            if (entityIn.isPassenger())
             {
                 entityIn.updateRidden();
             }
             else
             {
-                entityIn.onUpdate();
+                entityIn.tick();
             }
         }
 
@@ -150,13 +151,13 @@ public abstract class MixinWorld_Activation implements IMixinWorld {
         {
             for (Entity entity : entityIn.getPassengers())
             {
-                if (!entity.isDead && entity.getRidingEntity() == entityIn)
+                if (!entity.removed && entity.getRidingEntity() == entityIn)
                 {
                     this.updateEntity(entity);
                 }
                 else
                 {
-                    entity.dismountRidingEntity();
+                    entity.stopRiding();
                 }
             }
         }

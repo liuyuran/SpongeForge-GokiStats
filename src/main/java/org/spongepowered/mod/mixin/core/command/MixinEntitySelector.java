@@ -24,8 +24,8 @@
  */
 package org.spongepowered.mod.mixin.core.command;
 
-import net.minecraft.command.EntitySelector;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.arguments.EntitySelector;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -34,8 +34,8 @@ import org.spongepowered.common.command.WrapperCommandSource;
 @Mixin(EntitySelector.class)
 public abstract class MixinEntitySelector {
 
-    @Redirect(method = "matchEntitiesDefault", at = @At(value = "INVOKE", target = "net.minecraft.command.ICommandSender.canUseCommand(ILjava/lang/String;)Z"))
-    private static boolean redirectCanUseCommand(ICommandSender self, int opLevel, String command) {
+    @Redirect(method = "checkPermission", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/CommandSource;hasPermissionLevel(I)Z"))
+    private static boolean redirectCheckPermission(CommandSource self, int opLevel) {
         return WrapperCommandSource.of(self).hasPermission("minecraft.selector");
     }
 }

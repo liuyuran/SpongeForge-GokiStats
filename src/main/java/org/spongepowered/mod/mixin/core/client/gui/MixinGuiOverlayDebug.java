@@ -62,7 +62,7 @@ public abstract class MixinGuiOverlayDebug implements IMixinGuiOverlayDebug {
     private void addOwnerInfo(CallbackInfoReturnable<List<String>> cir) {
         List<String> arraylist = cir.getReturnValue();
         if (this.mc.objectMouseOver != null
-                && this.mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK
+                && this.mc.objectMouseOver.type == RayTraceResult.Type.BLOCK
                 && this.mc.objectMouseOver.getBlockPos() != null) {
             BlockPos blockpos1 = this.mc.objectMouseOver.getBlockPos();
             if (!blockpos1.equals(this.cursorPos)) {
@@ -72,8 +72,8 @@ public abstract class MixinGuiOverlayDebug implements IMixinGuiOverlayDebug {
             arraylist.add("Block Owner: " + this.blockOwner);
             arraylist.add("Block Notifier: " + this.blockNotifier);
             this.cursorPos = this.mc.objectMouseOver.getBlockPos();
-        } else if (this.mc.objectMouseOver != null && this.mc.objectMouseOver.typeOfHit == RayTraceResult.Type.ENTITY) {
-            Entity target = this.mc.objectMouseOver.entityHit;
+        } else if (this.mc.objectMouseOver != null && this.mc.objectMouseOver.type == RayTraceResult.Type.ENTITY) {
+            Entity target = this.mc.objectMouseOver.entity;
             BlockPos blockPos = target.getPosition();
             if (!blockPos.equals(this.cursorPos)) {
                 SpongeMessageHandler.getChannel().sendToServer(
