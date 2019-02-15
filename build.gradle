@@ -33,6 +33,7 @@ ext.testmods = project.project('testmods')
 ext.rootGroup = "net.minecraftforge.test"
 ext.rootMinecraft = "forge"
 ext.rootVersion = "$minecraftVersion-$forgeBuild-1.13-pre"
+ext.classifier = ""
 ext.isClient = true
 
 // Apply shared implementation Gradle config
