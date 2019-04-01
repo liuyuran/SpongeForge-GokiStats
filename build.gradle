@@ -30,9 +30,9 @@ buildscript {
 
 // On Forge, we use the Forge build number as Minecraft version for ForgeGradle
 ext.testmods = project.project('testmods')
-ext.rootGroup = "net.minecraftforge.test"
+ext.rootGroup = "net.minecraftforge"
 ext.rootMinecraft = "forge"
-ext.rootVersion = "$minecraftVersion-$forgeBuild-1.13-pre"
+ext.rootVersion = "$minecraftVersion-$forgeBuild"
 ext.classifier = ""
 ext.isClient = true
 
@@ -42,7 +42,6 @@ apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
 version = "$minecraftVersion-$forgeBuild-$apiSuffix-$buildNumber"
 
 dependencies {
-    minecraft "net.minecraftforge.test:forge:$minecraftVersion-$forgeBuild-1.13-pre"
 }
 
 minecraft {
@@ -55,7 +54,7 @@ minecraft {
 sponge.plugin.meta {
     dependencies {
         forge {
-            version = "$minecraftVersion-$forgeBuild-1.13-pre"
+            version = "$minecraftVersion-$forgeBuild"
         }
     }
 }

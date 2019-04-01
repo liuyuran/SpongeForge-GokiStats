@@ -156,8 +156,8 @@ public abstract class MixinChunk implements Chunk, IMixinChunk {
             blockpos$mutableblockpos.setPos(blockpos$mutableblockpos.getX(), l, blockpos$mutableblockpos.getZ());
 
             // Sponge Start - Use SpongeImplHooks for forge optimization
-            // if (this.getBlockState(blockpos$mutableblockpos).getLightValue() > 0) // Vanilla
-            // if (this.getBlockState(blockpos$mutableblockpos).getLightValue(this.worldObj, blockpos$mutableblockpos) > 0) // Forge
+            // if (this.getBlock(blockpos$mutableblockpos).getLightValue() > 0) // Vanilla
+            // if (this.getBlock(blockpos$mutableblockpos).getLightValue(this.worldObj, blockpos$mutableblockpos) > 0) // Forge
             if (SpongeImplHooks.getChunkPosLight(this.getBlockState(blockpos$mutableblockpos), this.world, blockpos$mutableblockpos) > 0) {
                 // Sponge End
                 this.world.checkLight(blockpos$mutableblockpos);
@@ -188,8 +188,8 @@ public abstract class MixinChunk implements Chunk, IMixinChunk {
     @Overwrite
     public int getBlockLightOpacity(BlockPos pos) {
         // Sponge Start - Rewrite to use SpongeImplHooks
-        // return this.getBlockState(pos).getLightOpacity(); // Vanilla
-        // return this.getBlockState(pos).getLightOpacity(this.worldObj, pos); // Forge
+        // return this.getBlock(pos).getLightOpacity(); // Vanilla
+        // return this.getBlock(pos).getLightOpacity(this.worldObj, pos); // Forge
         return getChunkBlockLightOpacity(this.getBlockState(pos), this.world, pos);
     }
 
@@ -208,7 +208,7 @@ public abstract class MixinChunk implements Chunk, IMixinChunk {
     private int getBlockLightOpacity(int x, int y, int z) {
         IBlockState state = this.getBlockState(x, y, z); //Forge: Can sometimes be called before we are added to the global world list. So use the less accurate one during that. It'll be recalculated later
         // Sponge Start - Rewrite to use SpongeImplHooks because, again, unecessary block state retrieval.
-        // return this.getBlockState(x, y, z).getLightOpacity(); // Vanilla
+        // return this.getBlock(x, y, z).getLightOpacity(); // Vanilla
         // return this.unloaded ? state.getLightOpacity() : state.getLightOpacity(this.worldObj, new BlockPos(x, y, z)); // Forge
         return this.unloadQueued ? state.getLightOpacity() : getChunkBlockLightOpacity(state, this.world, x, y, z);
         // Sponge End
