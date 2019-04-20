@@ -19,7 +19,6 @@
         "common.MixinSpongeCommonEventFactory",
         "common.MixinSpongeDimension",
         "common.MixinSpongeImplHooks",
-        "common.MixinSpongeProxyBlockAccess",
         "common.fluid.MixinSpongeFluidStackBuilder",
         "common.world.MixinWorldManager",
         "entity.MixinEntity",
