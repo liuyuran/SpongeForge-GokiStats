@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.mod.test.integration.regression.schematic;
+package org.spongepowered.mod.test.integration;
 
 import static org.junit.Assert.assertEquals;
 
@@ -79,7 +79,7 @@ public class PlacingSchematicTest extends BaseTest {
 
     @BeforeClass
     public static void setupSchematic() {
-        // Note that these are tested against in CustomTileRegistration test
+        // Note that these are tested against in CustomTileRegistrationTest test
         GameRegistry.registerTileEntity(Test1Tile.class, TileEntityRegistrationTest.UNQUALIFIED_TILE_ID);
         GameRegistry.registerTileEntity(Test2Tile.class, TileEntityRegistrationTest.CORRECTLY_QUALIFIED_ID);
         GameRegistry.registerTileEntity(Test3Tile.class, TileEntityRegistrationTest.MINECRAFT_PREFIXED_ID);

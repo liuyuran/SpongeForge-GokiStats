@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.mod.test.integration.regression;
+package org.spongepowered.mod.test.integration;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
@@ -48,9 +48,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RunWith(MinecraftRunner.class)
-public class TntExplosionTest extends BaseTest {
+public class TNTExplosionTest extends BaseTest {
 
-    public TntExplosionTest(TestUtils testUtils) {
+    public TNTExplosionTest(TestUtils testUtils) {
         super(testUtils);
     }
 

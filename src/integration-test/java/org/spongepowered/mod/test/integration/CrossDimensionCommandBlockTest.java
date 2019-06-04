@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.mod.test.integration.regression;
+package org.spongepowered.mod.test.integration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -51,9 +51,9 @@ import java.util.Optional;
 
 @RunWith(MinecraftRunner.class)
 @RegressionTest(ghIssue = "https://github.com/SpongePowered/SpongeCommon/issues/1718")
-public class CrossDimensionCommandBlock extends BaseTest  {
+public class CrossDimensionCommandBlockTest extends BaseTest  {
 
-    public CrossDimensionCommandBlock(TestUtils testUtils) {
+    public CrossDimensionCommandBlockTest(TestUtils testUtils) {
         super(testUtils);
     }
 

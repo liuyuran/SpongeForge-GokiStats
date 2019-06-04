@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.mod.test.integration.regression;
+package org.spongepowered.mod.test.integration;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,9 +42,9 @@ import org.spongepowered.mctester.junit.TestUtils;
 
 @RegressionTest(ghIssue = "https://github.com/SpongePowered/SpongeCommon/issues/1923")
 @RunWith(MinecraftRunner.class)
-public class UseItemStackFinishBug extends BaseTest {
+public class UseItemStackFinishTest extends BaseTest {
 
-    public UseItemStackFinishBug(TestUtils testUtils) {
+    public UseItemStackFinishTest(TestUtils testUtils) {
         super(testUtils);
     }
 
@@ -66,11 +66,11 @@ public class UseItemStackFinishBug extends BaseTest {
         // ItemFood takes 32 ticks to finish, wait for 100 just to be sure.
         this.testUtils.listenTimeout(() -> this.client.holdRightClick(true),
                 new StandaloneEventListener<>(UseItemStackEvent.Finish.class,
-                        (UseItemStackEvent.Finish event) -> UseItemStackFinishBug.this.testUtils.assertStacksEqual(stack, event.getItemStackInUse().createStack())),
+                        (UseItemStackEvent.Finish event) -> UseItemStackFinishTest.this.testUtils.assertStacksEqual(stack, event.getItemStackInUse().createStack())),
                 100);
 
 
-        UseItemStackFinishBug.this.client.holdRightClick(false);
+        UseItemStackFinishTest.this.client.holdRightClick(false);
     }
 
 }

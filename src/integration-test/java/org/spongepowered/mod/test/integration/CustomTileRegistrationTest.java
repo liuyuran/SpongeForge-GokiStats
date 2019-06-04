@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.mod.test.integration.regression;
+package org.spongepowered.mod.test.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.spongepowered.common.regression.registry.TileEntityRegistrationTest.CORRECTLY_QUALIFIED_ID;
@@ -45,9 +45,9 @@ import org.spongepowered.mctester.internal.BaseTest;
 import org.spongepowered.mctester.junit.TestUtils;
 
 @RunWith(MinecraftRunner.class)
-public class CustomTileRegistration extends BaseTest {
+public class CustomTileRegistrationTest extends BaseTest {
 
-    public CustomTileRegistration(TestUtils testUtils) {
+    public CustomTileRegistrationTest(TestUtils testUtils) {
         super(testUtils);
     }
 
