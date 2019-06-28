@@ -558,7 +558,7 @@ public abstract class MixinSpongeImplHooks {
      */
     @Overwrite
     public static void setShouldLoadSpawn(net.minecraft.world.DimensionType dimensionType, boolean keepSpawnLoaded) {
-        ((DimensionTypeBridge)(Object) dimensionType).setShouldLoadSpawn(keepSpawnLoaded);
+        ((DimensionTypeBridge)(Object) dimensionType).bridge$setShouldLoadSpawn(keepSpawnLoaded);
     }
 
     /**

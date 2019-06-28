@@ -22,46 +22,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.mod.mixin.core.client.server;
+package org.spongepowered.mod.mixin.api.minecraft.server.integrated;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.world.WorldSettings;
-import net.minecraft.world.WorldType;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.common.interfaces.IMixinIntegratedServer;
-import org.spongepowered.common.mixin.core.server.MixinMinecraftServer;
+import org.spongepowered.common.mixin.api.minecraft.server.MixinMinecraftServer_API;
 import org.spongepowered.mod.client.interfaces.IMixinMinecraft;
 
 @NonnullByDefault
 @Mixin(IntegratedServer.class)
-public abstract class MixinIntegratedServer extends MixinMinecraftServer implements IMixinIntegratedServer {
-    @Shadow @Final private WorldSettings worldSettings;
+public abstract class MixinIntegratedServer_API extends MixinMinecraftServer_API {
     @Shadow @Final private Minecraft mc;
-    private boolean isNewSave;
-
-    /**
-     * @author bloodmc
-     *
-     * @reason In order to guarantee that both client and server load worlds the
-     * same using our custom logic, we call super and handle any client specific
-     * cases there.
-     * Reasoning: This avoids duplicate code and makes it easier to maintain.
-     */
-    @Override
-    @Overwrite
-    public void loadAllWorlds(String overworldFolder, String unused, long seed, WorldType type, String generator) {
-        super.loadAllWorlds(overworldFolder, unused, seed, type, generator);
-    }
 
     @Override
     public void shutdown() {
@@ -70,7 +49,7 @@ public abstract class MixinIntegratedServer extends MixinMinecraftServer impleme
         }
 
         this.mc.addScheduledTask(() -> {
-            // Vanilla calls this, but it's completely unecessary.
+            // Vanilla calls this, but it's completely unnecessary.
             // It can also inherently racy, and can cause the client
             // thread to hang in unusual circumstances. For more information,
             // see github.com/Aaron1011/McTester
@@ -78,7 +57,7 @@ public abstract class MixinIntegratedServer extends MixinMinecraftServer impleme
                 this.mc.world.sendQuittingDisconnectingPacket();
             }*/
 
-            this.mc.loadWorld((WorldClient)null);
+            this.mc.loadWorld(null);
             this.mc.displayGuiScreen(new GuiMainMenu());
         });
     }
@@ -88,20 +67,5 @@ public abstract class MixinIntegratedServer extends MixinMinecraftServer impleme
         checkNotNull(kickMessage);
         ((IMixinMinecraft) Minecraft.getMinecraft()).setSinglePlayerKickMessage(kickMessage);
         shutdown();
-    }
-
-    @Override
-    public WorldSettings getSettings() {
-        return this.worldSettings;
-    }
-
-    @Override
-    public void markNewSave() {
-        this.isNewSave = true;
-    }
-
-    @Override
-    public boolean isNewSave() {
-        return this.isNewSave;
     }
 }

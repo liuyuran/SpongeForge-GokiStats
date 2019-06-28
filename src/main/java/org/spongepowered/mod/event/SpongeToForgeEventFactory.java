@@ -908,7 +908,7 @@ public class SpongeToForgeEventFactory {
         WorldEvent.Save forgeEvent = (WorldEvent.Save) eventData.getForgeEvent();
         // Since Forge only uses a single save handler, we need to make sure to pass the overworld's handler.
         // This makes sure that mods dont attempt to save/read their data from the wrong location.
-        ((WorldBridge) spongeEvent.getTargetWorld()).setRedirectedWorldInfo(WorldManager.getWorldByDimensionId(0).get().getWorldInfo());
+        ((WorldBridge) spongeEvent.getTargetWorld()).setRedirectedWorldInfo(SpongeImpl.getWorldManager().getDefaultWorld().getWorldInfo());
         if (forgeEvent == null) {
             forgeEvent = new WorldEvent.Save((net.minecraft.world.World) spongeEvent.getTargetWorld());
             eventData.setForgeEvent(forgeEvent);
@@ -925,7 +925,7 @@ public class SpongeToForgeEventFactory {
         // Since Forge only uses a single save handler, we need to make sure to pass the overworld's handler.
         // This makes sure that mods dont attempt to save/read their data from the wrong location.
         final net.minecraft.world.World minecraftWorld = (net.minecraft.world.World) spongeEvent.getTargetWorld();
-        ((WorldBridge) spongeEvent.getTargetWorld()).setRedirectedWorldInfo(WorldManager.getWorldByDimensionId(0).get().getWorldInfo());
+        ((WorldBridge) spongeEvent.getTargetWorld()).setRedirectedWorldInfo(SpongeImpl.getWorldManager().getDefaultWorld().getWorldInfo());
         ((ServerChunkProviderBridge) minecraftWorld.getChunkProvider()).bridge$setForceChunkRequests(true);
         try {
             if (forgeEvent == null) {

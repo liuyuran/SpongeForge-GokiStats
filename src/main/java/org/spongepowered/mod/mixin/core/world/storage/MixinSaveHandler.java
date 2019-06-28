@@ -68,7 +68,7 @@ public abstract class MixinSaveHandler {
         final WorldInfo worldInfo = SaveFormatOld.loadAndFix(file, fixer, handler);
         if (worldInfo != null) {
             try {
-                ((IMixinSaveHandler) handler).loadSpongeDatData(worldInfo);
+                ((IMixinSaveHandler) handler).loadSpongeData(worldInfo);
             } catch (Exception e) {
                 throw new RuntimeException("derp", e);
             }

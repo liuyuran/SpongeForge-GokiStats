@@ -27,10 +27,13 @@ package org.spongepowered.mod.mixin.core.client.gui;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.common.world.WorldManager;
+import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.bridge.server.MinecraftServerBridge;
 
 /**
  * In Sponge's Multi-World implementation, we give each world its own {@link WorldInfo}. While this is a great idea all around (allows us to
@@ -38,13 +41,14 @@ import org.spongepowered.common.world.WorldManager;
  * most people would tell us to not worry about it as Sponge isn't really client-side oriented, I have no tolerance for breaking Vanilla
  * functionality (barring some exceptions) so this cannot stand.
  */
+@SideOnly(Side.CLIENT)
 @Mixin(GuiOptions.class)
 public abstract class MixinGuiOptions {
 
   @Redirect(method = "actionPerformed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/storage/WorldInfo;setDifficulty(Lnet/minecraft/world/EnumDifficulty;)V"))
   private void syncDifficulty(WorldInfo worldInfo, EnumDifficulty newDifficulty) {
     // Sync server
-    WorldManager.getWorlds().forEach(worldServer -> WorldManager.adjustWorldForDifficulty(worldServer, newDifficulty, true));
+    SpongeImpl.getWorldManager().getWorlds().forEach(worldServer -> ((MinecraftServerBridge) SpongeImpl.getServer()).bridge$updateWorldForDifficulty(worldServer, newDifficulty, true));
     // Sync client
     worldInfo.setDifficulty(newDifficulty);
   }
@@ -52,7 +56,7 @@ public abstract class MixinGuiOptions {
   @Redirect(method = "confirmClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/storage/WorldInfo;setDifficultyLocked(Z)V"))
   private void syncDifficultyLocked(WorldInfo worldInfo, boolean locked) {
     // Sync server
-    WorldManager.getWorlds().forEach(worldServer -> worldServer.getWorldInfo().setDifficultyLocked(locked));
+    SpongeImpl.getWorldManager().getWorlds().forEach(worldServer -> worldServer.getWorldInfo().setDifficultyLocked(locked));
     // Sync client
     worldInfo.setDifficultyLocked(locked);
   }

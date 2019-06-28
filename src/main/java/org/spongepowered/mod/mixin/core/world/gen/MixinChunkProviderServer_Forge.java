@@ -37,8 +37,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.SpongeImplHooks;
 import org.spongepowered.common.bridge.world.ServerWorldBridge;
+import org.spongepowered.common.bridge.world.WorldProviderBridge;
 import org.spongepowered.common.bridge.world.chunk.ServerChunkProviderBridge;
 import org.spongepowered.common.mixin.core.world.gen.MixinChunkProviderServer;
 
@@ -55,8 +57,8 @@ public abstract class MixinChunkProviderServer_Forge implements ServerChunkProvi
         // Remove forge's persistent chunk check since we cache it in the chunk. Only unload the world if we're not the overworld and we're told that
         // we are not to keep spawn loaded (which is our flag to keep the world loaded)
         // TODO Consider splitting this into two flags: keep-spawn-loaded and keep-world-loaded
-        if (this.loadedChunks.size() == 0 && ((ServerWorldBridge) this.world).bridge$getDimensionId() != 0 && !SpongeImplHooks.shouldKeepSpawnLoaded(this
-                .world.provider.getDimensionType(), ((ServerWorldBridge) this.world).bridge$getDimensionId())) {
+        if (this.loadedChunks.size() == 0 && SpongeImpl.getWorldManager().getDefaultWorld() != this.world && !SpongeImplHooks.shouldKeepSpawnLoaded(this
+                .world.provider.getDimensionType())) {
             net.minecraftforge.common.DimensionManager.unloadWorld(this.world.provider.getDimension());
         }
     }

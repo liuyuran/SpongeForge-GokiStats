@@ -91,7 +91,6 @@ import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.SpongeInternalListeners;
 import org.spongepowered.common.bridge.block.BlockBridge;
 import org.spongepowered.common.bridge.world.chunk.ChunkProviderBridge;
-import org.spongepowered.common.bridge.world.chunk.ServerChunkProviderBridge;
 import org.spongepowered.common.bridge.world.chunk.ChunkBridge;
 import org.spongepowered.common.command.MinecraftCommandWrapper;
 import org.spongepowered.common.entity.SpongeProfession;
@@ -118,7 +117,6 @@ import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
 import org.spongepowered.common.service.sql.SqlServiceImpl;
 import org.spongepowered.common.util.SpongeHooks;
-import org.spongepowered.common.world.WorldManager;
 import org.spongepowered.common.world.storage.SpongePlayerDataHandler;
 import org.spongepowered.mod.inject.SpongeForgeModule;
 import org.spongepowered.mod.interfaces.IMixinVillagerProfession;
@@ -531,7 +529,6 @@ public class SpongeMod extends MetaModContainer {
 
         // used for client
         if (this.game.getPlatform().getType().isClient()) {
-            WorldManager.registerVanillaTypesAndDimensions();
             this.game.getServiceManager().provide(SqlService.class).ifPresent(sqlService -> ((SqlServiceImpl) sqlService).buildConnectionCache());
         }
     }
@@ -570,11 +567,6 @@ public class SpongeMod extends MetaModContainer {
 
         // Save all data that is waiting to be saved
         SpongeImpl.getConfigSaveManager().flush();
-
-        // used by client
-        if (this.game.getPlatform().getType().isClient()) {
-            WorldManager.unregisterAllWorldSettings();
-        }
     }
 
     // This overrides the method in PluginContainer

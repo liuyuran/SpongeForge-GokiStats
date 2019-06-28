@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.mod.mixin.core.server;
+package org.spongepowered.mod.mixin.core.server.integrated;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.relauncher.Side;
@@ -37,6 +37,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.mod.mixin.core.server.MixinPlayerList_Forge;
 
 import java.util.Optional;
 
@@ -53,7 +54,7 @@ public class MixinIntegratedServerAnonInner3 {
      */
     @ModifyArg(method = "run()V", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/PlayerList;playerLoggedOut(Lnet/minecraft/entity/player/EntityPlayerMP;)V"))
-    public EntityPlayerMP beforeFirePlayerLoggedOut(EntityPlayerMP playerIn) {
+    private EntityPlayerMP beforeFirePlayerLoggedOut(EntityPlayerMP playerIn) {
         Player player = (Player) playerIn;
         MessageChannel originalChannel = player.getMessageChannel();
         Sponge.getCauseStackManager().pushCause(player);

@@ -28,7 +28,7 @@ import net.minecraft.profiler.Snooper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.WorldType;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -54,63 +54,38 @@ public abstract class MixinMinecraftServer_Forge implements MinecraftServerBridg
     @Shadow @Final private static Logger LOGGER;
     @Shadow @Final private Snooper usageSnooper;
     @Shadow(remap = false) public Hashtable<Integer, long[]> worldTickTimes;
-    @Shadow private boolean serverIsRunning;
-
     @Shadow public abstract PlayerProfileCache getPlayerProfileCache();
-
-    @Override
-    public long[] bridge$getWorldTickTimes(int dimensionId) {
-        return this.worldTickTimes.get(dimensionId);
-    }
-
-    @Override
-    public void bridge$putWorldTickTimes(int dimensionId, long[] tickTimes) {
-        this.worldTickTimes.put(dimensionId, tickTimes);
-    }
-
-    @Override
-    public void bridge$removeWorldTickTimes(int dimensionId) {
-        this.worldTickTimes.remove(dimensionId);
-    }
-
-    @Inject(method = "updateTimeLightAndEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;updateEntities()V", shift = Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onPostUpdateEntities(CallbackInfo ci, Integer ids[], int x, int id, long i, WorldServer worldServer) {
-        ServerWorldBridge spongeWorld = (ServerWorldBridge) worldServer;
-        if (spongeWorld.getChunkGCTickInterval() > 0) {
-            spongeWorld.doChunkGC();
-        }
+    @Shadow public void loadAllWorlds(String saveName, String worldNameIn, long seed, WorldType type, String generatorOptions) {
     }
 
     /**
-     * @author Zidane - May 11th, 2016
-     * @reason Directs to {@link WorldManager} for multi world handling.
-     *
-     * @param dimensionId The requested dimension id
-     * @return The world server, if available, or else the overworld
+     * @author Zidane
+     * @reason Re-route to {@link WorldManager}.
      */
     @Overwrite
     public WorldServer getWorld(int dimensionId) {
-        WorldServer ret = WorldManager.getWorldByDimensionId(dimensionId).orElse(null);
+        WorldServer ret = SpongeImpl.getWorldManager().getWorld(dimensionId);
         if (ret == null) {
-            DimensionManager.initDimension(dimensionId);
-            ret = WorldManager.getWorldByDimensionId(dimensionId).orElse(null);
+            ret = SpongeImpl.getWorldManager().loadWorld(dimensionId);
         }
 
         if (ret == null) {
-            return WorldManager.getWorldByDimensionId(0).orElseThrow(() -> new RuntimeException("Attempt made to initialize "
-                    + "dimension before overworld is loaded!"));
+            ret = SpongeImpl.getWorldManager().getDefaultWorld();
+        }
+
+        if (ret == null) {
+            throw new RuntimeException("Attempt made to initialize " + dimensionId + " dimension before overworld is loaded!");
         }
 
         return ret;
     }
 
     /**
-     * @author Zidane - Chris Sanders
-     * @reason Overwrite to take control of the stopping process and direct to WorldManager
+     * @author Zidane
+     * @reason Disable async lighting and re-route to {@link WorldManager}.
      */
     @Overwrite
-    public void stopServer()
-    {
+    public void stopServer() {
         LOGGER.info("Stopping server");
 
         // Sponge Start - Force player profile cache save
@@ -119,36 +94,29 @@ public abstract class MixinMinecraftServer_Forge implements MinecraftServerBridg
         ((PlayerProfileCacheBridge) this.getPlayerProfileCache()).bridge$setCanSave(false);
 
         final MinecraftServer server = (MinecraftServer) (Object) this;
-        if (server.getNetworkSystem() != null)
-        {
+        if (server.getNetworkSystem() != null) {
             server.getNetworkSystem().terminateEndpoints();
         }
 
-        if (server.getPlayerList() != null)
-        {
+        if (server.getPlayerList() != null) {
             LOGGER.info("Saving players");
             server.getPlayerList().saveAllPlayerData();
             server.getPlayerList().removeAllPlayers();
         }
 
-        if (server.worlds != null)
-        {
+        if (server.worlds != null) {
             LOGGER.info("Saving worlds");
 
-            for (WorldServer worldserver : server.worlds)
-            {
-                if (worldserver != null)
-                {
+            for (WorldServer worldserver : server.worlds) {
+                if (worldserver != null) {
                     worldserver.disableLevelSaving = false;
                 }
             }
 
             server.saveAllWorlds(false);
 
-            for (WorldServer worldserver1 : server.worlds)
-            {
-                if (worldserver1 != null)
-                {
+            for (WorldServer worldserver1 : server.worlds) {
+                if (worldserver1 != null) {
                     // Turn off Async Lighting
                     if (SpongeImpl.getGlobalConfigAdapter().getConfig().getModules().useOptimizations() &&
                         SpongeImpl.getGlobalConfigAdapter().getConfig().getOptimizations().useAsyncLighting()) {
@@ -163,17 +131,39 @@ public abstract class MixinMinecraftServer_Forge implements MinecraftServerBridg
                         }
                     }
 
-                    // Direct to WorldManager for unload
-                    WorldManager.unloadWorld(worldserver1, false, true);
+                    SpongeImpl.getWorldManager().unloadWorld(worldserver1);
+
                     // Sponge End
                     worldserver1.flush();
                 }
             }
         }
 
-        if (this.usageSnooper.isSnooperRunning())
-        {
+        if (this.usageSnooper.isSnooperRunning()) {
             this.usageSnooper.stopSnooper();
         }
+    }
+
+    @Inject(method = "updateTimeLightAndEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;updateEntities()V", shift = Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void onPostUpdateEntities(CallbackInfo ci, Integer ids[], int x, int id, long i, WorldServer worldServer) {
+        ServerWorldBridge worldBridge = (ServerWorldBridge) worldServer;
+        if (worldBridge.getChunkGCTickInterval() > 0) {
+            worldBridge.doChunkGC();
+        }
+    }
+
+    @Override
+    public long[] bridge$getWorldTickTimes(int dimensionId) {
+        return this.worldTickTimes.get(dimensionId);
+    }
+
+    @Override
+    public void bridge$putWorldTickTimes(int dimensionId, long[] tickTimes) {
+        this.worldTickTimes.put(dimensionId, tickTimes);
+    }
+
+    @Override
+    public void bridge$removeWorldTickTimes(int dimensionId) {
+        this.worldTickTimes.remove(dimensionId);
     }
 }

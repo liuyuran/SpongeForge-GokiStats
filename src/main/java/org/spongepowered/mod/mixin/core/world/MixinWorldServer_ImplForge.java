@@ -52,32 +52,10 @@ public abstract class MixinWorldServer_ImplForge extends MixinWorld implements S
 
     @Shadow public abstract ChunkProviderServer getChunkProvider();
 
-    @Override
-    public int bridge$getDimensionId() {
-        return this.provider.getDimension();
-    }
-
-    @Redirect(
-        method = "<init>",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraftforge/common/DimensionManager;setWorld(ILnet/minecraft/world/WorldServer;Lnet/minecraft/server/MinecraftServer;)V",
-            remap = false
-        )
-    )
-    private void redirectSetWorld(int id, WorldServer world, MinecraftServer server) {
-        // Handled by WorldManager
-    }
-
     /**
      * @author gabizou - May 23rd, 2018
      * @reason - Even though Dedicated server does handle this change, I'm inlining the
      * block check for the player since
-     * @param server
-     * @param worldIn
-     * @param pos
-     * @param playerIn The player
-     * @return True if the event is cancelled, meaning the block is protected
      */
     @Redirect(
         method = "canMineBlockBody",
@@ -109,9 +87,6 @@ public abstract class MixinWorldServer_ImplForge extends MixinWorld implements S
      * check, because if the block is modifiable, then the event should not be cancelled; however,
      * if the event is cancelled, then the block is not modifiable.
      * </p>
-     * @param player
-     * @param pos
-     * @return True if the block is modifiable, or if the event is not cancelled
      */
     @Overwrite
     @Override
@@ -128,9 +103,6 @@ public abstract class MixinWorldServer_ImplForge extends MixinWorld implements S
         }
         return false;
     }
-
-
-
 
     @Override
     public SpongeChunkGenerator bridge$createChunkGenerator(SpongeWorldGenerator newGenerator) {

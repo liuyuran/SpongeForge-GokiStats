@@ -25,14 +25,26 @@
 package org.spongepowered.mod.mixin.core.world;
 
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.WorldProvider;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.bridge.world.DimensionTypeBridge;
+import org.spongepowered.common.registry.type.world.DimensionTypeRegistryModule;
 
 @Mixin(value = DimensionType.class, priority = 1002, remap = false)
 public abstract class MixinDimensionType_Forge implements DimensionTypeBridge {
 
     @Shadow private boolean shouldLoadSpawn;
+
+    @Inject(method = "register", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private static void addDimensionTypeAsCatalog(String name, String suffix, int id, Class<? extends WorldProvider> provider, boolean keepLoaded,
+        CallbackInfoReturnable<DimensionType> cir, DimensionType newType) {
+        DimensionTypeRegistryModule.getInstance().registerAdditionalCatalog((org.spongepowered.api.world.DimensionType) (Object) newType);
+    }
 
     /**
      * @author blood - September 10th, 2016
@@ -44,7 +56,7 @@ public abstract class MixinDimensionType_Forge implements DimensionTypeBridge {
      * the world can be unloaded.
      */
     @Override
-    public boolean shouldKeepSpawnLoaded() {
+    public boolean bridge$shouldKeepSpawnLoaded() {
         return this.shouldLoadSpawn;
     }
 }
