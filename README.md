@@ -1,3 +1,17 @@
+project desc
+------
+My english is not very good, so if you can communicate with chinese, I'll very happy.
+
+It's a sponge mod forked from GokiStats and SpongeForge. 
+
+Just see a issue from this mod, and I want to solve it.
+
+After research source code, I think that need try to rewrite addExp method with spigot.
+
+And then... this project was born.
+
+There is some description of sponge forge at below.
+
 SpongeForge [![Build Status](https://travis-ci.org/SpongePowered/SpongeForge.svg?branch=master)](https://travis-ci.org/SpongePowered/SpongeForge)
 =============
 

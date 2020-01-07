@@ -1,0 +1,35 @@
+{
+    "gokistats:critical" : {
+        "category": "master",
+        "sounds": [
+            "gokistats:critical1",
+            "gokistats:critical2",
+			"gokistats:critical3",
+			"gokistats:critical4"
+        ]
+    },
+	"gokistats:magician" : {
+        "category": "blocks",
+        "sounds": [
+            "gokistats:magician1",
+            "gokistats:magician2",
+			"gokistats:magician3"
+        ]
+    },
+	"gokistats:reaper" : {
+        "category": "master",
+        "sounds": [
+            "gokistats:reaper1",
+            "gokistats:reaper2",
+			"gokistats:reaper3"
+        ]
+    },
+	"gokistats:treasure" : {
+        "category": "blocks",
+        "sounds": [
+            "gokistats:treasure1",
+            "gokistats:treasure2",
+			"gokistats:treasure3"
+        ]
+    }
+}

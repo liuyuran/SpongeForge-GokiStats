@@ -2,6 +2,9 @@
 buildscript {
     repositories {
         maven {
+            url 'https://repo.huaweicloud.com/repository/maven/'
+        }
+        maven {
             name = 'gradle-plugins'
             url = 'https://plugins.gradle.org/m2'
         }
