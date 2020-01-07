@@ -64,7 +64,7 @@ configurations { testCompile.extendsFrom(forgeGradleMcDeps) }
 
 ext.common = project(":SpongeCommon")
 ext.minecraftVersion = common.minecraftVersion + "-" + forgeVersion + '.' + forgeBuild
-ext.testmods = project.project('testmods')
+ext.GokiStats = project.project('GokiStats')
 ext.implementationId = "spongeforge"
 
 // Apply shared implementation Gradle config
@@ -89,7 +89,7 @@ sponge.plugin.meta {
 }
 
 dependencies {
-    runtime testmods
+    runtime GokiStats
 }
 
 test {
@@ -162,7 +162,7 @@ tasks.withType(ShadowJar) {
     relocate('com.typesafe.config', 'configurate.typesafe.config')
 
     dependencies {
-        exclude project(testmods.path)
+        exclude project(GokiStats.path)
 
         include dependency('com.typesafe:config')
 
@@ -186,7 +186,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             pom.whenConfigured {
-                pom -> pom.dependencies.removeAll { it.groupId == 'org.spongepowered' && it.artifactId == 'testmods' }
+                pom -> pom.dependencies.removeAll { it.groupId == 'org.spongepowered' && it.artifactId == 'GokiStats' }
             }
         }
     }

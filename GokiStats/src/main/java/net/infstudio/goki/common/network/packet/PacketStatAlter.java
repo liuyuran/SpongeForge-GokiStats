@@ -117,6 +117,7 @@ public class PacketStatAlter implements GokiPacket {
 
                 player.addExperience((int) (stat.getCost(level - this.amount - 2) * GokiConfig.globalModifiers.globalRevertFactor));
                 DataHelper.setPlayerStatLevel(player, stat, level - this.amount);
+
                 if (stat instanceof StatMaxHealth) {
                     player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20 + level - this.amount);
                 }

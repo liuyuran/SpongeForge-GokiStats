@@ -12,7 +12,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.DataHolder;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.living.player.Player;
 
+import java.util.Optional;
 import java.util.function.IntFunction;
 
 public class DataHelper {
@@ -73,10 +78,12 @@ public class DataHelper {
     }
 
     public static void setPlayersExpTo(EntityPlayer player, int total) {
-        player.experience = 0;
-        player.experienceLevel = 0;
-        player.experienceTotal = 0;
-        player.addExperience(total);
+        Optional<Player> spongePlayer = Sponge.getServer().getPlayer(player.getUniqueID());
+        if(!spongePlayer.isPresent()) return;
+        Player okPlayer = spongePlayer.get();
+        if (okPlayer.supports(Keys.TOTAL_EXPERIENCE)) {
+            okPlayer.offer(Keys.TOTAL_EXPERIENCE, total);
+        }
     }
 
     public static int getXPTotal(int xpLevel, float current) {
